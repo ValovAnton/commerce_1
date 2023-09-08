@@ -1,0 +1,132 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>{{auct.title}}</h2>
+
+
+        {% if auct  %}
+
+        <div class="card shadow-sm">
+            {% if auct.image_url %}
+
+                <img class="card shadow-sm" src="{{auct.image_url}}" width="225" height="225" alt="{{auct.title}}">
+            {% else %}
+                <svg class="bd-placeholder-img card-img-top" width="30%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em">No Image yet</text></svg>
+
+            {% endif %}
+            <div class="card-body">
+
+              <div class="d-flex justify-content-between align-items-center">
+                <p class="card-text"> Descr: {{ auct.description }} </p>
+                  <p class="card-text"> Category: {{ auct.category }} </p>
+                  <p class="card-text"> Auction ends: {{ auct.date_end }} </p>
+                     {% if user.is_authenticated %}
+                  <p class="card-text"> Auction owner: {{ auct.owner }} </p>
+
+                  <form action = "{% url 'buy_now' auct.pk %}" method="POST">
+                        {% csrf_token %}
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                                <button type="submit" class="btn btn-danger">By now {{ auct.wanted }}</button>
+                            </div>
+                        </div>
+                  </form>
+                {% endif %}
+
+              </div>
+                             {% if user != auct.owner %}
+                                        <form action = "{% url 'makebid' auct.pk %}" method="POST">
+                                            {% csrf_token %}
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div class="btn-group">
+                                                    {% if auct.high_bid %}
+                                                        {% if auct.high_bid.user == user %}
+                                                            <div>
+                                                                You bid {{ auct.high_bid.bid}}<br/>
+                                                            </div>
+                                                            {% else %}
+                                                            <div>
+                                                                {{ auct.high_bid}}<br/>
+                                                            </div>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                    {% if user.is_authenticated %}
+
+                                                    <input name="bid" type="text" required>
+                                                    <button type="submit" class="btn btn-danger">make bid</button>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </form>
+                            {% else %}
+                                 <div class="d-flex justify-content-between align-items-center">
+                                                <div class="btn-group">
+                                                    {% if auct.high_bid %}
+                                                            <div>
+                                                              Current bid:  {{ auct.high_bid}}<br/>
+                                                            </div>
+                                                     <div class="d-flex justify-content-between align-items-center">
+                                                        <form action = "{% url 'close_auction' auct.pk %}" method="POST">
+                                                            {% csrf_token %}
+                                                            <button type="submit" class="btn btn-danger">Close</button>
+                                                        </form>
+                                                     </div>
+                                                     {% else %}
+                                                            <div>
+                                                              No bid yet<br/>
+                                                            </div>
+                                                    {% endif %}
+
+                                                </div>
+                                            </div>
+
+                            {% endif %}
+                <ul>
+                    {% for com in comments %}
+                        <li> {{ com }}</li>
+                    {% endfor %}
+                    {% if user.is_authenticated %}
+                     <form action="{% url 'add_comment' auct.id %}" method = "POST">
+                         {% csrf_token %}
+                        <div class="btn-group">
+                            <input type="text" class="form-control" name ="new_comment" required>
+
+                            <button type="submit" class="btn btn-success">Comment</button>
+                        </div>
+                    </form>
+                    {% endif %}
+                </ul>
+
+                {% if user.is_authenticated %}
+
+                <div class="d-flex justify-content-between align-items-center">
+                    {% if iswatching %}
+                        <form action = "{% url 'remove_from_watchlist' auct.id %}" method = "POST">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Remove from watchlist</button>
+                        </form>
+
+
+                    {% else %}
+                        <form action = "{% url 'add_to_watchlist' auct.id %}" method = "POST">
+                            {% csrf_token %}
+                             <button type="submit" class="btn btn-success">Add to watchlist</button>
+                        </form>
+                    {% endif %}
+                </div>
+
+                {% endif %}
+            </div>
+          </div>
+
+
+        <div>
+
+
+
+
+        </div>
+
+    {% endif %}
+
+{% endblock %}
