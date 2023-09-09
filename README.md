@@ -9,10 +9,10 @@ My name is *Valov Anton*.
 ```mermaid
 %% trying to make mermaid
 graph LR;
-active listings -- "login" --> Login;
-Login --"add to watchlist" --> watchlist page;
-active-listings -- "click to title" --> page with one listing;
-page with one listing -- "Buy now" --> Listing not active;
-active-listings -- "click to buylist" --> page with by list;
-Listing not active --> page with by list;
+	active listings -- "login" --> Login;
+	Login --"add to watchlist" --> watchlist page;
+	active-listings -- "click to title" --> page with one listing;
+	page with one listing -- "Buy now" --> Listing not active;
+	active-listings -- "click to buylist" --> page with by list;
+	Listing not active --> page with by list;
 ```
