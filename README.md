@@ -7,7 +7,6 @@ My name is *Valov Anton*.
 
 
 ```mermaid
-%% trying to make mermaid
 graph LR;
 	active listings -- "login" --> Login;
 	Login --"add to watchlist" --> watchlist page;
